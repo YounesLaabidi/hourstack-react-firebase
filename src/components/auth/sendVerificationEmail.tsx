@@ -1,23 +1,17 @@
-import { useState, useEffect } from "react";
-import { sendEmailVerification, getAuth, User } from "firebase/auth";
+import { useState} from "react";
+import { sendEmailVerification, User } from "firebase/auth";
 import { useAuth } from "@/contexts/AuthProvider";
 
-interface VerificationEmailProps {
-  user: User; // Ensure type safety for the user object
-}
 
-const sendVerificationEmail: React.FC<VerificationEmailProps> = ({ user }) => {
+const sendVerificationEmail: React.FC = () => {
   const [isSent, setIsSent] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { currentUser } = useAuth();
   const confirmEmail = async () => {
     try {
       await sendEmailVerification(currentUser as User);
       setIsSent(true);
-    } catch (error) {
-      setError(error.message);
-    }
+    } catch (error) {}
   };
 
   return (

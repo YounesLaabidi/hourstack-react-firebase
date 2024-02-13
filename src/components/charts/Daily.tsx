@@ -29,14 +29,14 @@ export default function Daily() {
   const numberOfDayInMonth = getDaysInMonth(selectedMonth);
 
   let { dailyHours } = useDailyHours(numberOfDayInMonth, data);
-
-  if (isSameWeek(date.startOfDayOfMonth, date.endDate)) {
-    const startDay = new Date(date.startOfDayOfMonth).getDate();
-    const endDay = new Date(date.endDate).getDate();
-    dailyHours = dailyHours?.filter(
-      (item) => item.day >= startDay && item.day <= endDay
-    );
-  }
+  if (date.startOfDayOfMonth)
+    if (isSameWeek(date.startOfDayOfMonth, date.endDate)) {
+      const startDay = new Date(date.startOfDayOfMonth).getDate();
+      const endDay = new Date(date.endDate).getDate();
+      dailyHours = dailyHours?.filter(
+        (item) => item.day >= startDay && item.day <= endDay
+      );
+    }
   if (!dailyHours?.length)
     return (
       <h2 className="text-center my-4 font-medium text-red-400">

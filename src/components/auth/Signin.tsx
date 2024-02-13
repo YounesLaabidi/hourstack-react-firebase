@@ -58,15 +58,15 @@ export default function Signin() {
     }
   }
 
-  const [error, setError] = useState<null | false>(null);
+  const [error, setError] = useState<null | string>(null);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setError(null);
       setAlreadySent(false);
       await signin(values.email, values.password);
       navigate("/app");
-    } catch (err) {
-      if ((err.message = "Firebase: Error (auth/invalid-credential).")) {
+    } catch (err: any) {
+      if (err.message === "Firebase: Error (auth/invalid-credential).") {
         setError("incorrect email or password");
       } else {
         setError("failed to login");

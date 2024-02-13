@@ -17,14 +17,13 @@ import {
   User,
   UserCredential,
   updatePassword,
-  updateEmail,
   sendEmailVerification,
   verifyBeforeUpdateEmail,
 } from "firebase/auth";
 
 interface AuthContextType {
   currentUser: User | null;
-  signup: (email: string, password: string) => Promise<UserCredential>;
+  signup: (email: string, password: string) => void;
   signin: (email: string, password: string) => Promise<UserCredential>;
   signout: () => Promise<void>;
   signinWithGoogle: () => Promise<UserCredential>;
@@ -76,7 +75,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateUserEmail = async (newEmail: string) => {
     // check if email is not associated with other account
-    // if (currentUser) updateEmail(currentUser, newEmail);
     if (currentUser) await verifyBeforeUpdateEmail(currentUser, newEmail);
   };
   const updateUserPassword = async (newPassword: string) => {

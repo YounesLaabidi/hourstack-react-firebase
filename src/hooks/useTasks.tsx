@@ -9,10 +9,9 @@ export default function (date: TDate): TaskFirestoreDoc[] {
   const [tasks, setTasks] = useState<TaskFirestoreDoc[]>([]);
   const { currentUser } = useAuth();
   const startDate = date.startOfDayOfMonth || date.startDate;
-
   useEffect(() => {
     const q = query(
-      collection(db, "users", currentUser?.uid, "timers"),
+      collection(db, "users", currentUser?.uid as string, "timers"),
       where("completedAt", ">=", formatISO(startDate)),
       where("completedAt", "<", formatISO(date.endDate))
     );

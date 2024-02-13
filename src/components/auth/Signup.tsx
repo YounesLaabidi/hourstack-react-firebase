@@ -7,13 +7,12 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { boolean, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useTheme } from "@/contexts/ThemeProvider";
 // form schema with zod
 const formSchema = z
   .object({
@@ -45,13 +44,12 @@ export default function Signup() {
     } catch (err) {}
   }
 
-  const [error, setError] = useState<null | boolean>(null);
-  const { theme } = useTheme();
+  const [error, setError] = useState<null | string>(null);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await signup(values.email, values.password);
       navigate("/app");
-    } catch (err) {
+    } catch (err: any) {
       if ((err.message = "Firebase: Error (auth/email-already-in-use).")) {
         setError("this email already used");
       } else {

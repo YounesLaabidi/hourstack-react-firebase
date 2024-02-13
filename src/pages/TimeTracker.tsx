@@ -9,8 +9,6 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import ProfileToggle from "@/components/ui/profile-toggle";
 import SendVerificationEmail from "@/components/auth/sendVerificationEmail";
 import { useAuth } from "@/contexts/AuthProvider";
-import { User } from "firebase/auth";
-import { useTheme } from "@/contexts/ThemeProvider";
 export default function TimeTracker() {
   const {
     timeInput,
@@ -23,12 +21,9 @@ export default function TimeTracker() {
     inputValidation,
   } = useTimer();
   const { currentUser } = useAuth();
-  const { theme } = useTheme();
   return (
     <div className="px-5 max-w-screen-xl mx-auto">
-      {!currentUser?.emailVerified && (
-        <SendVerificationEmail user={currentUser as User} />
-      )}
+      {!currentUser?.emailVerified && <SendVerificationEmail />}
       <div className="flex gap-2 mt-4 justify-end w-full mb-3">
         <Button
           className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700"

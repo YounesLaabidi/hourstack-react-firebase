@@ -29,7 +29,6 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 import BackSpaceIcon from "../ui/BackSpaceIcon";
 import CalendarIcon from "../ui/CalendarIcon";
-
 export default function Table() {
   const { theme } = useTheme();
   const { date, setDate } = useTimeContext();
@@ -38,12 +37,15 @@ export default function Table() {
   const { currentUser } = useAuth();
   const deleteTask = async (id: string, name: string) => {
     // getting the document from tasks collection
-    const docRef = doc(db, "users", currentUser?.uid, "tasks", name);
+    const docRef = doc(db, "users", currentUser?.uid as string, "tasks", name);
     const docSnap = await getDoc(docRef);
     // remove the target doc
+    if (!docSnap.exists()) {
+      return;
+    }
     const updatedDoc = docSnap
       .data()
-      .refs.filter(({ docRef }) => docRef !== id);
+      .refs.filter(({ docRef }: { docRef: string }) => docRef !== id);
 
     // if the task array now empty
     if (updatedDoc.length <= 0) {
@@ -55,7 +57,7 @@ export default function Table() {
         refs: updatedDoc,
       });
     }
-    await deleteDoc(doc(db, "users", currentUser.uid, "timers", id));
+    await deleteDoc(doc(db, "users", currentUser?.uid as string, "timers", id));
   };
 
   const dateFormatter = new Intl.DateTimeFormat("en-us", {

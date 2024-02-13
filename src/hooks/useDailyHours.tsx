@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { type DailyHoursState, type Task } from "../types";
 // import { data } from "../constants";
 
-const calculateDailyHours = (data) => {
+const calculateDailyHours = (data: Task[]) => {
   const dailyHoursMap = new Map();
 
   data.forEach((entry: any) => {
@@ -43,5 +43,3 @@ export const useDailyHours = (numberOfDays: number, data: Task[]) => {
 
   return { dailyHours };
 };
-
-

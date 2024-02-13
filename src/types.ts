@@ -19,11 +19,6 @@ export type TDate = {
   endDate: Date;
 };
 
-export type TimeChangeParams = {
-  e: React.ChangeEvent<HTMLInputElement>;
-  setDate: React.Dispatch<React.SetStateAction<Date>>;
-};
-
 export type MonthlyHoursState = {
   month: string;
   totalHours: number;
@@ -39,7 +34,7 @@ export type TimeContextValue = {
   setDate: React.Dispatch<React.SetStateAction<TDate>>;
 };
 
-type DocRef = {
+export type DocRef = {
   docRef: string;
   time: string;
   createdAt: string;

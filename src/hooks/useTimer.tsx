@@ -9,6 +9,7 @@ import {
 import { type Task } from "../types";
 import { saveTaskToFirestore } from "../services/firestoreService";
 import { useAuth } from "@/contexts/AuthProvider";
+import { User } from "firebase/auth";
 
 const useTimer = () => {
   const { currentUser } = useAuth();
@@ -27,10 +28,10 @@ const useTimer = () => {
 
   function startTimer(): void {
     if (!task.createdAt) {
+      const inputValue = inputRef.current?.value ?? "";
       setTask((prev) => ({
         ...prev,
-        name:
-          slugify(inputRef.current?.value, { lower: true, trim: true }) ?? "",
+        name: slugify(inputValue, { lower: true, trim: true }) ?? "",
         createdAt: new Date().toISOString(),
         time: timeInput,
       }));
@@ -105,7 +106,7 @@ const useTimer = () => {
 
   useEffect(() => {
     if (task.completed) {
-      saveTaskToFirestore(task, currentUser);
+      saveTaskToFirestore(task, currentUser as User);
       resetTimer();
     }
 

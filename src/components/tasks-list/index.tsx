@@ -9,8 +9,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
 import { useAuth } from "@/contexts/AuthProvider";
-import { useTheme } from "@/contexts/ThemeProvider";
-
+import { type DocRef } from "@/types";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function formatDate(inputDate: string) {
@@ -38,12 +37,18 @@ function calculateTotalTimeInHours(timeString: string) {
   return totalTimeInHours;
 }
 
+type TChartVisibility = [{ id: string }[]] | [];
 export default function TasksList() {
-  const [tasks, setTasks] = useState<DataItem[] | undefined>(undefined);
-  const [chartVisibility, setChartVisibility] = useState([]);
+  const [tasks, setTasks] = useState<DataItem[] | null>(null);
+  const [chartVisibility, setChartVisibility] = useState<TChartVisibility>([]);
   const { currentUser } = useAuth();
+
   useEffect(() => {
-    const q = query(collection(db, "users", currentUser?.uid, "tasks"));
+    // get the user tasks
+    const q = query(
+      collection(db, "users", currentUser?.uid as string, "tasks")
+    );
+    // attach database listener
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const docSnap = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -56,7 +61,7 @@ export default function TasksList() {
     return () => unsubscribe();
   }, []);
 
-  function getChartData(refs) {
+  function getChartData(refs: DocRef[]) {
     const date = refs.map((ref) => formatDate(ref.createdAt));
     const numberOfHours = refs.map((ref) =>
       calculateTotalTimeInHours(ref.time)
@@ -66,7 +71,7 @@ export default function TasksList() {
       labels: date,
       datasets: [
         {
-          label: tasks[0].id,
+          label: tasks && tasks[0].id,
           data: numberOfHours,
           backgroundColor: "#d5dde7",
         },
@@ -75,17 +80,16 @@ export default function TasksList() {
   }
 
   // this function takes taskId
-  const toggleChartVisibility = (taskId) => {
+  const toggleChartVisibility = (taskId: string) => {
     setChartVisibility((prevVisibility) => ({
       ...prevVisibility,
-      [taskId]: !prevVisibility[taskId],
+      [taskId]: !prevVisibility[taskId as keyof typeof prevVisibility],
     }));
   };
-
   return (
     tasks && (
       <div className="container mx-auto my-8">
-        {tasks.map((item) => (
+        {tasks?.map((item) => (
           <div
             key={item.id}
             className="mb-8 border-[1px] rounded-sm  pt-3 px-3"
@@ -119,11 +123,11 @@ export default function TasksList() {
               onClick={() => toggleChartVisibility(item.id)}
               className="ms-auto block underline font-semibold text-sm mb-2"
             >
-              {chartVisibility[item.id] ? "Hide Chart" : "Show Chart"}
+              {chartVisibility[item.id as any] ? "Hide Chart" : "Show Chart"}
             </button>
-            {chartVisibility[item.id] && (
+            {chartVisibility[item.id as any] && (
               <div className="relative w-[100%] sm:h-[50vh] mx-auto md:h-[60vh] lg:h-[70vh] flex justify-center">
-                <Bar data={getChartData(item.refs)} />
+                <Bar data={getChartData(item.refs) as any} />
               </div>
             )}
           </div>

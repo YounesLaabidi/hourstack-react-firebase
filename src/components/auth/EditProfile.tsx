@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FC } from "react";
 import { z } from "zod";
 import {
   Form,
@@ -13,7 +12,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { type EditProfileProps } from "@/types";
 import { useAuth } from "@/contexts/AuthProvider";
-import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeProvider";
 import CloseIcon from "../ui/CloseIcon";
 
@@ -25,7 +23,7 @@ const formSchema = z.object({
       (val) =>
         val === "" ||
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-          val
+          val as string
         ),
       {
         message: "Invalid Email",
@@ -34,7 +32,7 @@ const formSchema = z.object({
   newPassword: z
     .string()
     .nullable()
-    .refine((val) => val === "" || /^(.{8,20})$/.test(val), {
+    .refine((val) => val === "" || /^(.{8,20})$/.test(val as string), {
       message: "password length requirements (8-20 characters)",
     }),
 });
@@ -96,6 +94,7 @@ export default function EditProfile({ isOpen, setIsOpen }: EditProfileProps) {
                       <Input
                         placeholder="New Email Address"
                         {...field}
+                        value={field.value || ""}
                         className="mb-2"
                       />
                     </div>
@@ -113,6 +112,7 @@ export default function EditProfile({ isOpen, setIsOpen }: EditProfileProps) {
                     <Input
                       placeholder="Password"
                       {...field}
+                      value={field.value || ""}
                       className="mb-2"
                       type="password"
                     />

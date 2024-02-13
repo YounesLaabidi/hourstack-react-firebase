@@ -26,7 +26,7 @@ export function useMonthlyTask(date: TDate): TaskFirestoreDoc[] {
 
   useEffect(() => {
     const q = query(
-      collection(db, "users", currentUser?.uid, "timers"),
+      collection(db, "users", currentUser?.uid as string, "timers"),
       where("completedAt", ">=", formatISO(firstDayOfMonth)),
       where("completedAt", "<", formatISO(lastDayOfMonth))
     );
