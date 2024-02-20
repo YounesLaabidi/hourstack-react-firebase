@@ -1,0 +1,81 @@
+# Node modules
+node_modules/
+
+# Build folders
+build/
+dist/
+coverage/
+
+# Package lock files
+package-lock.json
+
+# Yarn lock file
+yarn.lock
+
+# Editor files
+.vscode/
+.idea/
+.sublime-project
+.sublime-workspace
+
+# Temporary files
+npm-debug.log
+yarn-error.log
+lerna-debug.log
+
+# Testing artifacts
+.nyc_output/
+jest/
+
+# Source maps
+*.map
+
+# IDE specific files
+*.iml
+*.swo
+*.swp
+
+# Local configurations
+.env
+.env.local
+.env.development
+.env.production
+
+# Compiled files
+*.css.cjs
+*.js.cjs
+
+# Dependency manifests
+package-shrink.json
+
+# Other generated files
+CHANGELOG.md
+README.md
+yarn.lock
+lerna-locks.json
+
+# Ignore any local configurations for specific editors
+# Uncomment lines below if any are not already listed
+# .eslintrc.local
+# .prettierrc.local
+# .stylelintrc.local
+
+# Ignore any personal configuration files
+# .profile
+# .bashrc
+# .zshrc
+
+# Ignore local environment variables
+# .env.local
+
+# Ignore logs
+*.log
+
+# Ignore any test output, like jest
+test_output/
+
+# Ignore any temporary cache files
+tmp/
+
+# Ignore development server files
+public/dev-server.html

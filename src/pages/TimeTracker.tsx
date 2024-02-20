@@ -9,6 +9,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import ProfileToggle from "@/components/ui/profile-toggle";
 import SendVerificationEmail from "@/components/auth/sendVerificationEmail";
 import { useAuth } from "@/contexts/AuthProvider";
+import AudioPlayer from "@/components/AudioPlayer";
 export default function TimeTracker() {
   const {
     timeInput,
@@ -19,10 +20,13 @@ export default function TimeTracker() {
     saveTimer,
     inputRef,
     inputValidation,
+    playAudio,
+    setPlayAudio,
   } = useTimer();
   const { currentUser } = useAuth();
   return (
     <div className="px-5 max-w-screen-xl mx-auto">
+      <AudioPlayer playAudio={playAudio} setPlayAudio={setPlayAudio} />
       {!currentUser?.emailVerified && <SendVerificationEmail />}
       <div className="flex gap-2 mt-4 justify-end w-full mb-3">
         <Button

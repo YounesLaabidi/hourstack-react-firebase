@@ -42,7 +42,7 @@ export const saveTaskToFirestore = async (
         refs: [
           {
             docRef: addedDoc.id,
-            createdAt: new Date().toISOString(),
+            createdAt: task.createdAt,
             completedAt: task.completedAt,
             time: task.time,
           },

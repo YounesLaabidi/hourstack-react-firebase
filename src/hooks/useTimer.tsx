@@ -23,6 +23,13 @@ const useTimer = () => {
     completed: false,
     time: "",
   });
+  const originalTitle = "Hourstack";
+
+  useEffect(() => {
+    if (isRunning) {
+      document.title = timeInput;
+    }
+  }, [timeInput]);
   const timeInterval = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -104,10 +111,14 @@ const useTimer = () => {
     }
   }
 
+  const [playAudio, setPlayAudio] = useState(false);
+
   useEffect(() => {
     if (task.completed) {
       saveTaskToFirestore(task, currentUser as User);
       resetTimer();
+      setPlayAudio(true);
+      document.title = originalTitle;
     }
 
     return () => {};
@@ -135,6 +146,8 @@ const useTimer = () => {
     saveTimer,
     inputRef,
     inputValidation,
+    playAudio,
+    setPlayAudio,
   };
 };
 

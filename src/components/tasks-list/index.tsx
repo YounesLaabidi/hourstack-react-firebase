@@ -63,9 +63,13 @@ export default function TasksList() {
 
   function getChartData(refs: DocRef[]) {
     const date = refs.map((ref) => formatDate(ref.createdAt));
-    const numberOfHours = refs.map((ref) =>
-      calculateTotalTimeInHours(ref.time)
-    );
+    const numberOfHours = refs.map((ref) => {
+      const time = calculateTotalTimeInHours(ref.time);
+      let decimalPart = Math.round((time % 1) * 100);
+      decimalPart = Math.round((decimalPart * 60) / 100);
+      const integerPart = Math.trunc(time);
+      return (integerPart * 100 + decimalPart) / 100;
+    });
 
     return {
       labels: date,
@@ -86,15 +90,16 @@ export default function TasksList() {
       [taskId]: !prevVisibility[taskId as keyof typeof prevVisibility],
     }));
   };
+  // debugger;
   return (
     tasks && (
-      <div className="container mx-auto my-8">
+      <div className="container  my-8 w-full px-0 ">
         {tasks?.map((item) => (
           <div
             key={item.id}
             className="mb-8 border-[1px] rounded-sm  pt-3 px-3"
           >
-            <h2 className="text-2xl font-bold mb-4 capitalize">
+            <h2 className="text-xl font-bold mb-4 capitalize text-slate-800">
               {item.id.replace(/-/g, " ")}
             </h2>
             <ul className="ps-3 pt-3 flex-row border-[1px] mb-3 rounded-sm">
@@ -102,7 +107,7 @@ export default function TasksList() {
                 <li key={docRef} className="mb-4 flex text-sm">
                   <p className="">
                     <span className="font-semibold">From </span>
-                    {format(new Date(createdAt), "MM/dd/yyyy hh:mm")}
+                    {format(new Date(createdAt), "MM/dd/yyyy hh:mm:ss")}
                   </p>
                   <p className="">
                     <span className="font-semibold">&nbsp;To&nbsp;</span>
@@ -111,7 +116,7 @@ export default function TasksList() {
                       `${
                         !isSameDay(new Date(createdAt), new Date(completedAt))
                           ? "MM/dd/yyyy hh:mm"
-                          : "hh:mm"
+                          : "hh:mm:ss"
                       }  `
                     )}
                   </p>

@@ -6,7 +6,8 @@ export default function Auth() {
   const { theme } = useTheme();
   return (
     <div className="w-full bg-white md:max-w-lg md:ms-auto xl:max-w-2xl">
-      <div className="relative pt-2">
+      {/* <div className="relative pt-2 h-full"> */}
+      <div className={`relative pt-2 h-full dark:bg-slate-900`}>
         <div className="flex w- items-center justify-between md:justify-end lg:pt-4 px-4">
           <svg
             className="md:hidden"

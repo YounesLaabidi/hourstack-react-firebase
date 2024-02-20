@@ -116,7 +116,10 @@ export default function Signup() {
               {error}
             </div>
           )}
-          <Button type="submit" className="mt-3 w-full">
+          <Button
+            type="submit"
+            className="mt-3 w-full dark:bg-slate-950 dark:text-gray-400"
+          >
             Sign up
           </Button>
         </form>
@@ -127,7 +130,9 @@ export default function Signup() {
           onClick={signInWithGoogleProvider}
         >
           <img src="/google-icon.svg" alt="google-icon" className="w-4 me-2" />{" "}
-          <span className="text-black font-semibold">Google</span>
+          <span className="text-black font-semibold dark:text-gray-400">
+            Google
+          </span>
         </Button>
       </div>
     </div>
