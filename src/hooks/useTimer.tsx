@@ -15,6 +15,7 @@ const useTimer = () => {
   const { currentUser } = useAuth();
   const [timeInput, setTimeInput] = useState<string>("00:00:00");
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [playAudio, setPlayAudio] = useState(false);
   const [inputValidation, setInputValidation] = useState<boolean>(false);
   const [task, setTask] = useState<Task>({
     name: "",
@@ -93,6 +94,7 @@ const useTimer = () => {
       inputRef.current.value = "";
     }
   }
+
   function saveTimer(): void {
     const timeInterval = calculateTimeInterval({
       timeInput,
@@ -111,7 +113,25 @@ const useTimer = () => {
     }
   }
 
-  const [playAudio, setPlayAudio] = useState(false);
+  function saveToLater() {
+    // RlyVvnLCxsUGOhVAmlJn
+    const timeInterval = calculateTimeInterval({
+      timeInput,
+      startTime: task.time,
+    });
+
+    setTask((prev) => ({
+      ...prev,
+      time: timeInterval,
+      completed: true,
+      completedAt: new Date().toISOString(),
+      isSaveForLater: true,
+      remaining: timeInput,
+    }));
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }
 
   useEffect(() => {
     if (task.completed) {
@@ -120,7 +140,6 @@ const useTimer = () => {
       setPlayAudio(true);
       document.title = originalTitle;
     }
-
     return () => {};
   }, [task.completed]);
 
@@ -148,6 +167,7 @@ const useTimer = () => {
     inputValidation,
     playAudio,
     setPlayAudio,
+    saveToLater,
   };
 };
 

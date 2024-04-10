@@ -22,6 +22,7 @@ export default function TimeTracker() {
     inputValidation,
     playAudio,
     setPlayAudio,
+    saveToLater,
   } = useTimer();
   const { currentUser } = useAuth();
   return (
@@ -52,6 +53,14 @@ export default function TimeTracker() {
           onClick={saveTimer}
         >
           <img src="save-watch.svg" alt="save-watch" className="w-8 h-8" />
+        </Button>{" "}
+        {/* SAVE LATER BUTTON */}
+        <Button
+          className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700  disabled:opacity-80"
+          disabled={!isRunning}
+          onClick={saveToLater}
+        >
+          <img src="save-later.svg" alt="save-watch" className="w-7 h-7" />
         </Button>{" "}
         <ModeToggle />
         <ProfileToggle />

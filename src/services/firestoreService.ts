@@ -18,6 +18,7 @@ export const saveTaskToFirestore = async (
   try {
     const timersDocRef = collection(db, "users", currentUser.uid, "timers");
     const addedDoc = await addDoc(timersDocRef, task);
+    console.log(addedDoc);
     const tasksCollectionRef = collection(
       db,
       "users",

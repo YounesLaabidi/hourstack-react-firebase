@@ -4,6 +4,8 @@ export type Task = {
   completedAt: string;
   completed: boolean;
   time: string;
+  isSaveForLater?: boolean;
+  remaining?: string;
 };
 
 export type TaskFirestoreDoc = Task & { id: string };
