@@ -13,12 +13,28 @@ import { User } from "firebase/auth";
 
 export const saveTaskToFirestore = async (
   task: Task,
-  currentUser: User
+  currentUser: User,
+  docId?: string
 ): Promise<void> => {
   try {
     const timersDocRef = collection(db, "users", currentUser.uid, "timers");
+    // if this is from uncompleted update the document
+    if (docId) {
+      const docRef = doc(
+        db,
+        "users",
+        currentUser?.uid as string,
+        "timers",
+        docId
+      );
+
+      await updateDoc(docRef, {
+        isSaveForLater: false,
+        remaining: "",
+      });
+    }
+    // add the saved later task to database
     const addedDoc = await addDoc(timersDocRef, task);
-    console.log(addedDoc);
     const tasksCollectionRef = collection(
       db,
       "users",

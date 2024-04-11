@@ -64,3 +64,8 @@ export type EditProfileProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
+export type SearchEntriesType = {
+  id?: string;
+  name?: string;
+  remaining?: string;
+};

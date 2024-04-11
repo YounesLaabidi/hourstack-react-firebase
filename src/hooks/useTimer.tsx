@@ -6,14 +6,17 @@ import {
   convertTime,
   formatTime,
 } from "../utils/TimeUtils";
-import { type Task } from "../types";
+import { type SearchEntriesType, type Task } from "../types";
 import { saveTaskToFirestore } from "../services/firestoreService";
 import { useAuth } from "@/contexts/AuthProvider";
 import { User } from "firebase/auth";
 
-const useTimer = () => {
+const useTimer = (searchEntries: SearchEntriesType) => {
   const { currentUser } = useAuth();
-  const [timeInput, setTimeInput] = useState<string>("00:00:00");
+  const [timeInput, setTimeInput] = useState<string>(
+    searchEntries.remaining || "00:00:00"
+  );
+  const [taskInput, setTaskInput] = useState<string>(searchEntries.name || "");
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [playAudio, setPlayAudio] = useState(false);
   const [inputValidation, setInputValidation] = useState<boolean>(false);
@@ -24,6 +27,7 @@ const useTimer = () => {
     completed: false,
     time: "",
   });
+  // debugger;
   const originalTitle = "Hourstack";
 
   useEffect(() => {
@@ -135,7 +139,11 @@ const useTimer = () => {
 
   useEffect(() => {
     if (task.completed) {
-      saveTaskToFirestore(task, currentUser as User);
+      if (searchEntries.id) {
+        saveTaskToFirestore(task, currentUser as User, searchEntries.id);
+      } else {
+        saveTaskToFirestore(task, currentUser as User);
+      }
       resetTimer();
       setPlayAudio(true);
       document.title = originalTitle;
@@ -157,6 +165,8 @@ const useTimer = () => {
     return () => clearInterval(timeInterval.current as NodeJS.Timeout);
   }, [isRunning]);
   return {
+    taskInput,
+    setTaskInput,
     timeInput,
     setTimeInput,
     isRunning,

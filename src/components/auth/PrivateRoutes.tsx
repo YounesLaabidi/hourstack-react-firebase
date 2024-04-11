@@ -7,7 +7,7 @@ const PrivateRoutes = () => {
 
 const PublicRoutes = () => {
   const { currentUser } = useAuth();
-  return !currentUser ? <Outlet /> : <Navigate to="/app" />;
+  return !currentUser ? <Outlet /> : <Navigate to="/main" />;
 };
 
 export { PrivateRoutes, PublicRoutes };

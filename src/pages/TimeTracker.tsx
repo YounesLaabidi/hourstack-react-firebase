@@ -10,8 +10,20 @@ import ProfileToggle from "@/components/ui/profile-toggle";
 import SendVerificationEmail from "@/components/auth/sendVerificationEmail";
 import { useAuth } from "@/contexts/AuthProvider";
 import AudioPlayer from "@/components/AudioPlayer";
+import { useLocation, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { type SearchEntriesType } from "@/types";
+
 export default function TimeTracker() {
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+
+  const searchEntries: SearchEntriesType = Object.fromEntries(
+    Array.from(searchParams.entries())
+  );
   const {
+    taskInput,
+    setTaskInput,
     timeInput,
     setTimeInput,
     isRunning,
@@ -23,8 +35,9 @@ export default function TimeTracker() {
     playAudio,
     setPlayAudio,
     saveToLater,
-  } = useTimer();
+  } = useTimer(searchEntries);
   const { currentUser } = useAuth();
+
   return (
     <div className="px-5 max-w-screen-xl mx-auto">
       <AudioPlayer playAudio={playAudio} setPlayAudio={setPlayAudio} />
@@ -67,6 +80,8 @@ export default function TimeTracker() {
       </div>
       <div className="text-gray-500 flex flex-col items-center">
         <Input
+          value={taskInput}
+          onChange={(e) => setTaskInput(e.target.value)}
           ref={inputRef}
           type="text"
           placeholder="Write your task"
