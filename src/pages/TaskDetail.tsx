@@ -1,3 +1,3 @@
-export default function TaskDetail({ id }: { id: string }) {
+export default function TaskDetail() {
   return <div>TaskDetail</div>;
 }
