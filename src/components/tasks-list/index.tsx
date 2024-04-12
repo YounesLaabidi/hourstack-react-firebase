@@ -12,7 +12,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { type DocRef } from "@/types";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function formatDate(inputDate: string) {
+export function formatDate(inputDate: string) {
   // Parse the ISO string into a Date object
   const parsedDate = parseISO(inputDate);
 
@@ -22,7 +22,7 @@ function formatDate(inputDate: string) {
   return formattedDate;
 }
 
-function calculateTotalTimeInHours(timeString: string) {
+export function calculateTotalTimeInHours(timeString: string) {
   // Parse the time string into a Date object
   const parsedTime = parse(timeString, "HH:mm:ss", new Date(0));
 

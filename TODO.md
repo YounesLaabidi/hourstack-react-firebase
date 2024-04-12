@@ -11,8 +11,9 @@
    4. add the resume functionnality(x)
 
 3. add new route /tasks/ (x)
-4. add new route /takks/:id
-   1. add table to display data have delete functionnality
+4. add new route /takks/:id (x)
+   1. add table to display data have delete functionnality (x)
+   2. add chart
 5. add sonner when task saved
 
 6. style Uncompleted and Tasks and TaskDetail components
