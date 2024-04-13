@@ -48,8 +48,7 @@ export default function Daily() {
     datasets: [
       {
         label: "Daily Hour",
-        // data: dailyHours.map((item) => item.totalHours ),
-        data: dailyHours.map((item) => {
+         data: dailyHours.map((item) => {
           let decimalPart = Math.round((item.totalHours % 1) * 100);
           decimalPart = Math.round((decimalPart * 60) / 100);
           const integerPart = Math.trunc(item.totalHours);
@@ -60,8 +59,7 @@ export default function Daily() {
       },
     ],
   };
-  // debugger;
-  return (
+   return (
     <div className="relative w-[100%] sm:h-[50vh] mx-auto md:h-[60vh] lg:h-[70vh] flex justify-center">
       <Bar data={chartData} />
     </div>

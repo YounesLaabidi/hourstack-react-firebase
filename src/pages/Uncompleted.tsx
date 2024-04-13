@@ -1,20 +1,12 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import { db } from "@/config/firebase";
 import {
-  DocumentData,
-  QueryDocumentSnapshot,
-  QuerySnapshot,
   collection,
   deleteDoc,
   doc,
   getDoc,
-  getDocs,
-  limit,
   onSnapshot,
-  orderBy,
   query,
-  setDoc,
-  startAt,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -28,11 +20,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import BackSpaceIcon from "@/components/ui/BackSpaceIcon";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Task, TaskFirestoreDoc } from "@/types";
 import { Button } from "@/components/ui/button";
-import { redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { format } from "date-fns";
+import Spinner from "@/components/ui/Spinner";
+import { Toaster, toast } from "sonner";
+import ArrowIcon from "@/components/ui/ArrowIcon";
 
 // getting the document from tasks collection
 
@@ -40,32 +42,30 @@ export default function Uncompleted() {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { currentUser } = useAuth();
-  const [tasks, setTasks] = useState<TaskFirestoreDoc[] | null>(null);
-  // get the document with is saveForLater
-  // and 10 frist items
-  // and order by createdDate
+  const [tasks, setTasks] = useState<TaskFirestoreDoc[] | null | undefined>(
+    undefined
+  );
+
   useEffect(() => {
+    document.title = "Saved Task";
     const q = query(
-      // collection(db, `users/${currentUser?.uid}/timers`),
       collection(db, "users", currentUser?.uid as string, "timers"),
       where("isSaveForLater", "==", true)
     );
-    const unsubscribe = () => {
-      onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-          const documents = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...(doc.data() as Task),
-          }));
 
-          setTasks(documents);
-        } else {
-          setTasks([]);
-        }
-      });
-    };
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const documents = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Task),
+        }));
 
-    return unsubscribe;
+         setTasks(documents);
+      } else {
+         setTasks([]);
+      }
+    });
+    return () => unsubscribe();
   }, []);
   const deleteTask = async (id: string, name: string) => {
     // getting the document from tasks collection
@@ -120,6 +120,14 @@ export default function Uncompleted() {
         );
         break;
       case "DELETE":
+        toast(
+          <div>
+            <h5 className="font-semibold text-sm">Task Has Been Deleted</h5>
+            <h6 className="text-sm">
+              {format(Date.now(), "EEEE, MMMM dd, yyyy 'at' h:mm a")}
+            </h6>
+          </div>
+        );
         // DELETE DOC
         if (payload) {
           deleteTask(payload.id, payload.name as string);
@@ -135,9 +143,20 @@ export default function Uncompleted() {
     }
   };
 
+  {
+    tasks === undefined && <Spinner />;
+  }
+
   return (
-    <div className="px-7 max-w-screen-xl mx-auto">
-      <h1>Uncompleted Tasks</h1>
+    <div className="px-7 max-w-screen-xl mx-auto pt-8">
+      <Link
+        className="underline mb-4 text-sm font-medium flex gap-1"
+        to="/main"
+      >
+        <ArrowIcon theme={theme} />
+        Back To Home
+      </Link>
+      <h1 className="text-xl font-bold mb-3">Saved To Later Tasks</h1>
       <T className="border-gray-800">
         <TableCaption>A list of Uncompleted Tasks</TableCaption>
         <TableHeader>
@@ -151,61 +170,111 @@ export default function Uncompleted() {
             <TableHead>Save</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {tasks ? (
-            tasks.map((task) => {
-              return (
-                <TableRow key={task.id}>
-                  <TableCell className="font-semibold">{task.name}</TableCell>
-                  <TableCell>{task.createdAt}</TableCell>
-                  <TableCell>{task.completedAt}</TableCell>
-                  <TableCell>{task.remaining}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      onClick={() =>
-                        handleActions({
-                          action: "DELETE",
-                          payload: { id: task.id, name: task.name },
-                        })
-                      }
-                    ></Button>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      onClick={() =>
-                        handleActions({
-                          action: "RESUME",
-                          payload: {
-                            id: task.id,
-                            name: task.name,
-                            remaining: task.remaining,
-                          },
-                        })
-                      }
-                    >
-                      xx
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      onClick={() =>
-                        handleActions({
-                          action: "SAVE",
-                          payload: { id: task.id, name: task.name },
-                        })
-                      }
-                    >
-                      xx
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          ) : (
-            <p className="w-72">no uncompleted tasks</p>
-          )}
-        </TableBody>
+        <TooltipProvider>
+          <TableBody>
+            {tasks &&
+              tasks.map((task) => {
+                return (
+                  <TableRow key={task.id}>
+                    <TableCell className="font-semibold">{task.name}</TableCell>
+                    <TableCell>
+                      {format(
+                        new Date(task.createdAt),
+                        "yyyy/mm/dd (hh:mm:ss)"
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {format(
+                        new Date(task.createdAt),
+                        "yyyy/mm/dd (hh:mm:ss)"
+                      )}
+                    </TableCell>
+                    <TableCell>{task.remaining}</TableCell>
+                    <TableCell className="text-left">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          {" "}
+                          <Button
+                            className="bg-transparent p-0 hover:bg-transparent"
+                            onClick={() =>
+                              handleActions({
+                                action: "DELETE",
+                                payload: { id: task.id, name: task.name },
+                              })
+                            }
+                          >
+                            <img
+                              className="w-[40px]"
+                              src="/remove-icon.svg"
+                              alt="remove-icon"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Remove</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell className="text-left">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            className="bg-transparent p-0 hover:bg-transparent"
+                            onClick={() =>
+                              handleActions({
+                                action: "RESUME",
+                                payload: {
+                                  id: task.id,
+                                  name: task.name,
+                                  remaining: task.remaining,
+                                },
+                              })
+                            }
+                          >
+                            <img
+                              className="w-[40px]"
+                              src="/resume-icon.svg"
+                              alt="resume-icon"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Resume</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell className="text-left">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          {" "}
+                          <Button
+                            className="bg-transparent p-0 hover:bg-transparent"
+                            onClick={() =>
+                              handleActions({
+                                action: "SAVE",
+                                payload: { id: task.id, name: task.name },
+                              })
+                            }
+                          >
+                            <img
+                              className="w-[34px]"
+                              src="/save-icon.svg"
+                              alt="save-icon"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Save Anyway</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </TooltipProvider>
       </T>
+      <Toaster />
     </div>
   );
 }

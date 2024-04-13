@@ -76,8 +76,7 @@ export default function EditProfile({ isOpen, setIsOpen }: EditProfileProps) {
           onClick={() => setIsOpen(false)}
           className=" absolute top-2 right-2"
         >
-          {/* <img src="close-icon.svg" alt="" className="w-6 h-6" /> */}
-          <CloseIcon theme={theme} />
+           <CloseIcon theme={theme} />
         </button>
         <Form {...form}>
           <form

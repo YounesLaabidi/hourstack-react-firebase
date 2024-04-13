@@ -13,8 +13,8 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-// form schema with zod
-const formSchema = z
+
+ const formSchema = z
   .object({
     email: z.string().email(),
     password: z.string().min(8).max(20),

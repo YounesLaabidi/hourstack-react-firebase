@@ -1,28 +1,50 @@
-### IMPLEMENT NEW FEATURES
+### New Features Implementation
 
-1. add save to complete later button (x)
-   1. update the task schema (x)
-   2. add tooltip for button
-2. add new route /uncomplete(x)
+1. **Save to Complete Later Button**:
 
-   1. add the table(x)
-   2. add the save functionnality (x)
-   3. add the delete functionnality (x)
-   4. add the resume functionnality(x)
+   - Updated the task schema to include a field for tracking completion status.
+   - Added a "Save to Complete Later" button with a tooltip for enhanced user guidance.
 
-3. add new route /tasks/ (x)
-4. add new route /takks/:id (x)
-   1. add table to display data have delete functionnality (x)
-   2. add chart
-5. add sonner when task saved
+2. **New Route: /uncomplete**:
 
-6. style Uncompleted and Tasks and TaskDetail components
+   - Implemented a new route for displaying incomplete tasks.
+   - Added a table for listing tasks, along with functionalities for saving, deleting, and resuming tasks.
 
-### FIX BUGS
+3. **New Routes: /tasks/ and /tasks/:id**:
 
-1. time bugs
-2. chart bugs
+   - Created routes for viewing all tasks and individual task details.
+   - Implemented table components to display task data with functionalities such as deletion.
+   - Integrated a chart component for visualizing task statistics.
 
-### TESTING
+4. **Task Notification Sonner**:
 
-### BUILD CHROME EXTENSION
+   - Implemented Sonner notifications for task-related actions like saving, deleting, and completing tasks.
+
+5. **Tooltip Integration**:
+
+   - Added tooltips for improved user interaction, providing context and guidance for various actions.
+
+6. **Page Loading Animation**:
+   - Incorporated page loading animations to enhance user experience during data retrieval or processing.
+
+### Future Feature: Chrome Extension Development
+
+- **Chrome Extension Development**:
+  - Plan to extend application functionality by developing a Chrome extension, enabling users to access task management features directly from their browser.
+
+### Bug Fixes
+
+1. **Time-Related Bugs**:
+
+   - Resolved issues related to time calculations and display inconsistencies.
+
+2. **Chart Bugs in Task Detail Component**:
+
+   - Fixed bugs affecting the functionality and appearance of charts within the task detail component.
+
+3. **Page Title Updates**:
+
+   - Ensured page titles accurately reflect the content or actions performed on each page.
+
+4. **Timer Cancellation Page Title Fix**:
+   - Fixed inconsistencies in page titles when canceling timers, providing a smoother user experience.

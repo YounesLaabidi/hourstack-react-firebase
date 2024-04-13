@@ -20,6 +20,7 @@ import {
   sendEmailVerification,
   verifyBeforeUpdateEmail,
 } from "firebase/auth";
+import Spinner from "@/components/ui/Spinner";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading && children}
+      {!loading ? <Spinner /> : children}
     </AuthContext.Provider>
   );
 };

@@ -14,24 +14,6 @@ export const formatTime = ([hours, minutes, seconds]: number[]): string => {
   return `${formatedHours}:${formatedMinutes}:${formatedSeconds}`;
 };
 
-// export function calculateTimeInterval({
-//   timeInput,
-//   startTime,
-// }: TimeData): string {
-//   const commonDate = "1970-01-01T";
-//   const timeInputDate = new Date(`${commonDate}${timeInput}Z`);
-//   const startTimeDate = new Date(`${commonDate}${startTime}Z`);
-
-//   const timeDifference = startTimeDate.getTime() - timeInputDate.getTime();
-
-//   // Convert the time difference to a formatted string (HH:mm:ss)
-//   const hours = Math.floor(timeDifference / (1000 * 60 * 60));
-//   const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-//   const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-//   return `${hours}:${minutes}:${seconds}`;
-// }
-
 export function calculateTimeInterval({
   timeInput,
   startTime,
@@ -42,8 +24,7 @@ export function calculateTimeInterval({
 
   const timeDifference = startTimeDate.getTime() - timeInputDate.getTime();
 
-  // Convert the time difference to a formatted string (HH:mm:ss)
-  const hours = Math.floor(timeDifference / (1000 * 60 * 60))
+   const hours = Math.floor(timeDifference / (1000 * 60 * 60))
     .toString()
     .padStart(2, "0");
   const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60))

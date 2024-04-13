@@ -1,6 +1,4 @@
 import Charts from "@/components/charts/index";
-import TasksList from "@/components/tasks-list";
-import { Button } from "@/components/ui/button";
 import { TimeProvider } from "@/contexts/TimeProvider";
 import { useTimer } from "@/hooks/useTimer";
 import { Input } from "@/components/ui/input";
@@ -10,9 +8,17 @@ import ProfileToggle from "@/components/ui/profile-toggle";
 import SendVerificationEmail from "@/components/auth/sendVerificationEmail";
 import { useAuth } from "@/contexts/AuthProvider";
 import AudioPlayer from "@/components/AudioPlayer";
-import { useLocation, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+
 import { type SearchEntriesType } from "@/types";
+import { useEffect } from "react";
 
 export default function TimeTracker() {
   const { search } = useLocation();
@@ -37,47 +43,74 @@ export default function TimeTracker() {
     saveToLater,
   } = useTimer(searchEntries);
   const { currentUser } = useAuth();
-
+  useEffect(() => {
+    document.title = "HourStack";
+  });
   return (
     <div className="px-5 max-w-screen-xl mx-auto">
       <AudioPlayer playAudio={playAudio} setPlayAudio={setPlayAudio} />
       {!currentUser?.emailVerified && <SendVerificationEmail />}
-      <div className="flex gap-2 mt-4 justify-end w-full mb-3">
-        <Button
-          className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700"
-          onClick={() => setIsRunning((prev) => !prev)}
-        >
-          <img
-            src={isRunning ? "start-watch.svg" : "pause-watch.svg"}
-            alt="start-watch"
-            className="w-8 h-8"
-          />
-        </Button>
-        <Button
-          className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700  disabled:opacity-80"
-          disabled={!isRunning}
-          onClick={resetTimer}
-        >
-          <img src="reset-watch.svg" alt="reset-watch" className="w-8 h-8" />
-        </Button>
-        <Button
-          className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700  disabled:opacity-80"
-          disabled={!isRunning}
-          onClick={saveTimer}
-        >
-          <img src="save-watch.svg" alt="save-watch" className="w-8 h-8" />
-        </Button>{" "}
-        {/* SAVE LATER BUTTON */}
-        <Button
-          className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700  disabled:opacity-80"
-          disabled={!isRunning}
-          onClick={saveToLater}
-        >
-          <img src="save-later.svg" alt="save-watch" className="w-7 h-7" />
-        </Button>{" "}
-        <ModeToggle />
-        <ProfileToggle />
-      </div>
+      <TooltipProvider>
+        <div className="flex gap-2 mt-4 justify-end w-full mb-3">
+          <Tooltip>
+            <TooltipTrigger
+              className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700 flex justify-center items-center cursor-pointer"
+              onClick={() => setIsRunning((prev) => !prev)}
+            >
+              <img
+                src={isRunning ? "start-watch.svg" : "pause-watch.svg"}
+                alt="start-watch"
+                className="w-8 h-8"
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Start</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700 flex justify-center items-center cursor-pointer"
+              disabled={!isRunning}
+              onClick={resetTimer}
+            >
+              <img
+                src="reset-watch.svg"
+                alt="reset-watch"
+                className="w-8 h-8"
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Cancel</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700 flex justify-center items-center cursor-pointer"
+              disabled={!isRunning}
+              onClick={saveTimer}
+            >
+              <img src="save-watch.svg" alt="save-watch" className="w-8 h-8" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Save</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              className="bg-gray-900 text-white w-10 h-10 p-0 rounded-full hover:bg-gray-700 flex justify-center items-center cursor-pointer"
+              disabled={!isRunning}
+              onClick={saveToLater}
+            >
+              <img src="save-later.svg" alt="save-watch" className="w-7 h-7" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Save To Later</p>
+            </TooltipContent>
+          </Tooltip>
+          <ModeToggle />
+          <ProfileToggle />
+        </div>{" "}
+      </TooltipProvider>
       <div className="text-gray-500 flex flex-col items-center">
         <Input
           value={taskInput}
@@ -85,8 +118,7 @@ export default function TimeTracker() {
           ref={inputRef}
           type="text"
           placeholder="Write your task"
-          // className="rounded-sm focus-visible:ring-0"
-          className={`rounded-sm focus-visible:ring-0 ${
+           className={`rounded-sm focus-visible:ring-0 ${
             inputValidation && "border-red-600"
           } dark:text-white dark:placeholder:text-gray-300`}
           required
@@ -104,11 +136,8 @@ export default function TimeTracker() {
       <TimeProvider>
         <Table />
         <Charts />
-        <div className="">
-          <h2 className="font-bold text-3xl text-center mb-5 mt-5">Tasks</h2>
-          <TasksList />
-        </div>
       </TimeProvider>
+      <Toaster />
     </div>
   );
 }

@@ -1,5 +1,11 @@
 import useTasks from "../../hooks/useTasks";
-import { startOfDay, endOfDay, lastDayOfMonth, isSameDay } from "date-fns";
+import {
+  startOfDay,
+  endOfDay,
+  lastDayOfMonth,
+  isSameDay,
+  format,
+} from "date-fns";
 
 import {
   Table as T,
@@ -29,6 +35,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 import BackSpaceIcon from "../ui/BackSpaceIcon";
 import CalendarIcon from "../ui/CalendarIcon";
+import { toast } from "sonner";
 export default function Table() {
   const { theme } = useTheme();
   const { date, setDate } = useTimeContext();
@@ -62,16 +69,6 @@ export default function Table() {
 
   const dateFormatter = new Intl.DateTimeFormat("en-us", {
     dateStyle: "medium",
-  });
-
-  const hourFormatter = new Intl.DateTimeFormat("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZone: "UTC",
-  });
-  const dayFormatter = new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
   });
 
   const handleMonthChange = (month: Date) => {
@@ -181,19 +178,31 @@ export default function Table() {
                     isSameDay(date.startDate, date.endDate) && "hidden"
                   }`}
                 >
-                  {dayFormatter.format(new Date(createdAt))}
+                  {format(createdAt, "dd")}
                 </TableCell>
                 <TableCell>
-                  {hourFormatter.format(new Date(createdAt))}
+                   {format(createdAt, "hh:mm:ss a")}
                 </TableCell>
-                <TableCell>
-                  {" "}
-                  {hourFormatter.format(new Date(completedAt))}
-                </TableCell>
+                <TableCell> {format(completedAt, "hh:mm:ss a")}</TableCell>
                 <TableCell className="text-right">{time}</TableCell>
                 <TableCell className="text-right">
                   <Button
-                    onClick={() => deleteTask(id, name)}
+                    onClick={() => {
+                      toast(
+                        <div>
+                          <h5 className="font-semibold text-sm">
+                            Task Has Been Deleted
+                          </h5>
+                          <h6 className="text-sm">
+                            {format(
+                              Date.now(),
+                              "EEEE, MMMM dd, yyyy 'at' h:mm a"
+                            )}
+                          </h6>
+                        </div>
+                      );
+                      deleteTask(id, name);
+                    }}
                     className="bg-transparent p-0 hover:bg-transparent"
                   >
                     <BackSpaceIcon theme={theme} />

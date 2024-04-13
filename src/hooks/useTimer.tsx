@@ -10,6 +10,8 @@ import { type SearchEntriesType, type Task } from "../types";
 import { saveTaskToFirestore } from "../services/firestoreService";
 import { useAuth } from "@/contexts/AuthProvider";
 import { User } from "firebase/auth";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
 const useTimer = (searchEntries: SearchEntriesType) => {
   const { currentUser } = useAuth();
@@ -27,7 +29,6 @@ const useTimer = (searchEntries: SearchEntriesType) => {
     completed: false,
     time: "",
   });
-  // debugger;
   const originalTitle = "Hourstack";
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const useTimer = (searchEntries: SearchEntriesType) => {
       setTask((prev) => ({
         ...prev,
         name: slugify(inputValue, { lower: true, trim: true }) ?? "",
-        createdAt: new Date().toISOString(),
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
         time: timeInput,
       }));
     }
@@ -66,7 +67,7 @@ const useTimer = (searchEntries: SearchEntriesType) => {
         setIsRunning(false);
         setTask((prev) => ({
           ...prev,
-          completedAt: new Date().toISOString(),
+          completedAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
           completed: true,
         }));
         if (inputRef.current) {
@@ -97,6 +98,7 @@ const useTimer = (searchEntries: SearchEntriesType) => {
     if (inputRef.current) {
       inputRef.current.value = "";
     }
+    document.title = originalTitle;
   }
 
   function saveTimer(): void {
@@ -109,7 +111,7 @@ const useTimer = (searchEntries: SearchEntriesType) => {
       ...prev,
       time: timeInterval,
       completed: true,
-      completedAt: new Date().toISOString(),
+      completedAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
     }));
 
     if (inputRef.current) {
@@ -118,7 +120,6 @@ const useTimer = (searchEntries: SearchEntriesType) => {
   }
 
   function saveToLater() {
-    // RlyVvnLCxsUGOhVAmlJn
     const timeInterval = calculateTimeInterval({
       timeInput,
       startTime: task.time,
@@ -128,7 +129,7 @@ const useTimer = (searchEntries: SearchEntriesType) => {
       ...prev,
       time: timeInterval,
       completed: true,
-      completedAt: new Date().toISOString(),
+      completedAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
       isSaveForLater: true,
       remaining: timeInput,
     }));
@@ -139,6 +140,14 @@ const useTimer = (searchEntries: SearchEntriesType) => {
 
   useEffect(() => {
     if (task.completed) {
+      toast(
+        <div>
+          <h5 className="font-semibold text-sm">Task Has Been Saved</h5>
+          <h6 className="text-sm">
+            {format(Date.now(), "EEEE, MMMM dd, yyyy 'at' h:mm a")}
+          </h6>
+        </div>
+      );
       if (searchEntries.id) {
         saveTaskToFirestore(task, currentUser as User, searchEntries.id);
       } else {
