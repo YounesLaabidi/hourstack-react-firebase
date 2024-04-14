@@ -60,6 +60,7 @@ export default function TaskDetail() {
       if (!document.exists()) {
         setTask(null);
       } else {
+        console.log({ id: document.id, ...document.data() });
         setTask({ id: document.id, ...document.data() } as DataItem);
       }
     })();
@@ -153,12 +154,12 @@ export default function TaskDetail() {
               return (
                 <TableRow key={item.docRef}>
                   <TableCell>
-                    {format(new Date(item.createdAt), "yyyy/mm/dd (hh:mm:ss)")}
+                    {format(item.createdAt, "MMMM do, yyyy 'at' h:mm:ss a")}
                   </TableCell>
                   <TableCell>
                     {format(
                       new Date(item.completedAt),
-                      "yyyy/mm/dd (hh:mm:ss)"
+                      "MMMM do, yyyy 'at' h:mm:ss a"
                     )}
                   </TableCell>
                   <TableCell>{item.time}</TableCell>
